@@ -23,8 +23,7 @@ class Simpletokenizer:
         for (index, character) in pair:
             self.token_to_id[character] = index
             self.id_to_token[index] = character
-        print(self.token_to_id)
-        print(self.id_to_token)
+       
     def encode(self, text):
         encoded = []
         for i in text:
@@ -33,7 +32,6 @@ class Simpletokenizer:
             except:
                 encoded.append(0)
         
-        print(encoded)
         return encoded
     def decode(self, ids):
         decoded = []
