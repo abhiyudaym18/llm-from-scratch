@@ -45,9 +45,9 @@ class Simpletokenizer:
 
 
 
-
-#o1 = Simpletokenizer()
-#o1.train("abcdefghijklmnopqrstuvwxyz")
-#o1.encode("Hello%")
-#val = [8, 5, 12, 12, 15]
-#o1.decode(val)
+if __name__ == "__main__":
+    o1 = Simpletokenizer()
+    o1.train("abcdefghijklmnopqrstuvwxyz")
+    o1.encode("Hello%")
+    val = [8, 5, 12, 12, 15]
+    o1.decode(val)

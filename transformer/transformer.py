@@ -12,7 +12,7 @@ class FeedForword(nn.Module):
         self.relu = nn.ReLU()
         self.linear_layer_2 = nn.Linear(embedding_dim*4, embedding_dim)
 
-    def Forward(self,data):
+    def forward(self,data):
         x = self.linear_layer_1(data)
         x = self.relu(x)
         x = self.linear_layer_2(x)
@@ -31,9 +31,9 @@ class TransformerBlock(nn.Module):
         x = x + self.feedforword(x)
         x = self.norm2(x)
         return x
+if __name__ == "__main__":
+    obj = TransformerBlock(4)
 
-obj = TransformerBlock(4)
+    input_var = torch.randn(9,4)
 
-input_var = torch.randn(9,4)
-
-obj.forward(input_var)
+    obj.forward(input_var)
