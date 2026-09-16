@@ -2,6 +2,7 @@ from tokenizer.tokenizer import Simpletokenizer
 from model.model import LLM
 import torch 
 import torch.nn as nn
+import json
 
 
 
@@ -10,7 +11,8 @@ def  Train(text,epoch):
     tokenizer.train(text)
     encoded = tokenizer.encode(text)
     vocabsize = len(tokenizer.token_to_id)
-    llm_model = LLM(vocabsize, embedding_dim=4)
+    embedding_dim=4
+    llm_model = LLM(vocabsize, embedding_dim)
     llm_model.tokenizer.train(text)
     loss_func = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(llm_model.parameters(), lr=0.001)
@@ -34,9 +36,18 @@ def  Train(text,epoch):
         if epoch%100 == 0:
             print(epoch)
             print(loss)
+    torch.save(llm_model.state_dict(), 'model.pth')
+    saved_model = {
+        "Vocab_size" : vocabsize,
+        "embedding_dim" : embedding_dim
+    }
+    with open("model_config_json", "w") as f:
+        json.dump(saved_model,f)
+
+    
 
 if __name__ == "__main__":
-    Train("hello world this is a simple language model", epoch=1000)
+    Train("Watch all four videos. You have now built what he is explaining visually. ", epoch=1000)
     
 
 
