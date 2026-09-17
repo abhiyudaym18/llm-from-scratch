@@ -11,7 +11,7 @@ def  Train(text,epoch):
     tokenizer.train(text)
     encoded = tokenizer.encode(text)
     vocabsize = len(tokenizer.token_to_id)
-    embedding_dim=4
+    embedding_dim=128
     llm_model = LLM(vocabsize, embedding_dim)
     llm_model.tokenizer.train(text)
     loss_func = nn.CrossEntropyLoss()
@@ -45,11 +45,10 @@ def  Train(text,epoch):
         json.dump(saved_model,f)
 
     
-
 if __name__ == "__main__":
-    Train("Watch all four videos. You have now built what he is explaining visually. ", epoch=1000)
-    
-
+    with open("moby_dick_or_the_whale.txt", "r", encoding="utf-8") as f:
+        text = f.read()
+    Train(text, epoch=1000)
 
     
 
