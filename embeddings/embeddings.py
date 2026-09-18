@@ -9,12 +9,12 @@ from tokenizer.tokenizer import Simpletokenizer
 class Embedding(nn.Module):
     def __init__(self,vocabsize,embedding_dim):
         super().__init__()
-        self.matrix = torch.rand(vocabsize,embedding_dim)
+        self.matrix = nn.Embedding(vocabsize,embedding_dim)
         
 
     def lookup(self,word):
         
-        return self.matrix[word]
+        return self.matrix(word)
 
 
 class Attention(nn.Module):
@@ -27,23 +27,14 @@ class Attention(nn.Module):
                 exp_sum = torch.sum(exp_score)
                 return exp_score/exp_sum
      
-     def forward(self,embeddings):
-        num = len(embeddings)
+     def forward(self, embeddings):
         dim = embeddings.shape[1]
-        scores = torch.zeros((num,num))
-        weight = torch.zeros((num,num))
-        output = torch.zeros((num, dim))
-
-        for i in range(num):
-            for j in range(num):
-                scores[i][j] = torch.dot(embeddings[i], embeddings[j])
-        for i in range(num):
-            weight[i] = self.softmax(scores[i]) 
-        for i in range(num):
-             output[i] = torch.matmul(weight[i], embeddings)
-
+        scale = dim ** 0.5
+        scores = torch.matmul(embeddings, embeddings.transpose(0, 1)) / scale
+        weights = torch.softmax(scores, dim=-1)
+        output = torch.matmul(weights, embeddings)
         return output
-    
+        
 if __name__ == "__main__":
 
     t = Simpletokenizer()

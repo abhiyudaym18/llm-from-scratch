@@ -25,6 +25,12 @@ class LLM(nn.Module):
         output = self.output(tranformer)
 
         return output
+    def forward_ids(self, ids_tensor):
+        embeded = self.embeddings.lookup(ids_tensor)
+        attended = self.attention.forward(embeded)
+        tranformed = self.transformerblock.forward(attended)
+        output = self.output(tranformed)
+        return output
     
 if __name__ == "__main__":
     t = Simpletokenizer()

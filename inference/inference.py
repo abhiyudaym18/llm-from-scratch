@@ -33,7 +33,9 @@ if __name__ == "__main__":
     vocab_size = saved_data.get("Vocab_size")
     embedding_dim = saved_data.get("embedding_dim")
     trained_model = LLM(vocab_size, embedding_dim)
-    trained_model.tokenizer.train("Hello world this is my model")
+    with open("moby_dick_or_the_whale.txt", "r", encoding="utf-8") as f:
+        training_text = f.read()
+    trained_model.tokenizer.train(training_text)
     trained_model.load_state_dict(torch.load("model.pth"))
     trained_model.eval()
     while True: 
