@@ -15,8 +15,9 @@ def generate(model, prompt, num_tokens):
         output = model.forward(generated_text)
 
         last_token_score = output[-1]
-
-        next_token_id = torch.argmax(last_token_score)
+        temperature = 0.8
+        probs = torch.softmax(last_token_score/ temperature, dim=-1)
+        next_token_id = torch.multinomial(probs, num_samples=1)
         token_id = next_token_id.item()
         if token_id in model.tokenizer.id_to_token:
             next_char = model.tokenizer.id_to_token[token_id]
@@ -38,6 +39,8 @@ if __name__ == "__main__":
     trained_model.tokenizer.train(training_text)
     trained_model.load_state_dict(torch.load("model.pth"))
     trained_model.eval()
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    trained_model = trained_model.to(device)
     while True: 
         prompt = input("Enter your prompt")
         print(generate(trained_model, prompt, num_tokens=20))

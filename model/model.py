@@ -12,24 +12,29 @@ class LLM(nn.Module):
         self.tokenizer = Simpletokenizer()
         self.embeddings = Embedding(vocab_size,embedding_dim)
         self.attention = Attention()
-        self.transformerblock = TransformerBlock(embedding_dim)
+        self.blocks = nn.ModuleList([TransformerBlock(embedding_dim) for _ in range(4)])
         self.output = nn.Linear(embedding_dim, vocab_size)
 
     def forward(self, text):
         ids = self.tokenizer.encode(text)
         ids_tensor = torch.tensor(ids)
+        ids_tensor = ids_tensor.to(next(self.parameters()).device)
 
         embeded = self.embeddings.lookup(ids_tensor)
         attentded = self.attention.forward(embeded)
-        tranformer = self.transformerblock.forward(attentded)
-        output = self.output(tranformer)
+        x = attentded
+        for block in self.blocks:
+            x = block(x)
+        output = self.output(x)
 
         return output
     def forward_ids(self, ids_tensor):
         embeded = self.embeddings.lookup(ids_tensor)
         attended = self.attention.forward(embeded)
-        tranformed = self.transformerblock.forward(attended)
-        output = self.output(tranformed)
+        x = attended
+        for block in self.blocks:
+            x = block(x)
+        output = self.output(x)
         return output
     
 if __name__ == "__main__":

@@ -60,7 +60,7 @@ def  Train(text,epoch):
 if __name__ == "__main__":
     with open("moby_dick_or_the_whale.txt", "r", encoding="utf-8") as f:
         text = f.read()
-    Train(text, epoch=100000)
+    Train(text, epoch=500000)
 
     
 
