@@ -33,7 +33,15 @@ class Attention(nn.Module):
         scores = torch.matmul(embeddings, embeddings.transpose(0, 1)) / scale
         weights = torch.softmax(scores, dim=-1)
         output = torch.matmul(weights, embeddings)
-        return output
+        return output 
+class PositionalEncoding(nn.Module):
+     def __init__(self, sequence_length, embedding_dim):
+          super().__init__()
+          self.matrix = nn.Embedding(sequence_length,embedding_dim)
+     def forward(self,sequence_length):
+          positions = torch.arange(sequence_length, device=self.matrix.weight.device)
+          return self.matrix(positions)
+     
         
 if __name__ == "__main__":
 

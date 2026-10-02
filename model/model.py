@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from  tokenizer.tokenizer import Simpletokenizer 
-from  embeddings.embeddings import Embedding, Attention
+from  embeddings.embeddings import Embedding, Attention, PositionalEncoding
 from transformer.transformer import TransformerBlock
 
 class LLM(nn.Module):
@@ -14,6 +14,7 @@ class LLM(nn.Module):
         self.attention = Attention()
         self.blocks = nn.ModuleList([TransformerBlock(embedding_dim) for _ in range(4)])
         self.output = nn.Linear(embedding_dim, vocab_size)
+        self.positional_encoding = PositionalEncoding(512, embedding_dim)
 
     def forward(self, text):
         ids = self.tokenizer.encode(text)
@@ -21,6 +22,8 @@ class LLM(nn.Module):
         ids_tensor = ids_tensor.to(next(self.parameters()).device)
 
         embeded = self.embeddings.lookup(ids_tensor)
+        seq_len = embeded.shape[0]
+        embeded = embeded + self.positional_encoding.forward(seq_len)
         attentded = self.attention.forward(embeded)
         x = attentded
         for block in self.blocks:
@@ -30,6 +33,8 @@ class LLM(nn.Module):
         return output
     def forward_ids(self, ids_tensor):
         embeded = self.embeddings.lookup(ids_tensor)
+        seq_len = embeded.shape[0]
+        embeded = embeded + self.positional_encoding.forward(seq_len)
         attended = self.attention.forward(embeded)
         x = attended
         for block in self.blocks:

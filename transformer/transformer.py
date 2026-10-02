@@ -11,10 +11,12 @@ class FeedForword(nn.Module):
         self.linear_layer_1 = nn.Linear(embedding_dim,embedding_dim*4)
         self.relu = nn.ReLU()
         self.linear_layer_2 = nn.Linear(embedding_dim*4, embedding_dim)
+        self.dropout = nn.Dropout(0.1)
 
     def forward(self,data):
         x = self.linear_layer_1(data)
         x = self.relu(x)
+        x = self.dropout(x)
         x = self.linear_layer_2(x)
         return x
 class TransformerBlock(nn.Module):
@@ -24,13 +26,15 @@ class TransformerBlock(nn.Module):
         self.feedforword = FeedForword(embedding_dim)
         self.norm1 = nn.LayerNorm(embedding_dim)
         self.norm2 = nn.LayerNorm(embedding_dim)
+        self.dropout = nn.Dropout(0.1)
 
-    def forward(self,x):
+    def forward(self, x):
         x = x + self.attention(x)
-        x = self.norm1(x)
+        x = self.dropout(self.norm1(x))
         x = x + self.feedforword(x)
-        x = self.norm2(x)
+        x = self.dropout(self.norm2(x))
         return x
+    
 if __name__ == "__main__":
     obj = TransformerBlock(4)
 

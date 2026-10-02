@@ -21,7 +21,7 @@ def  Train(text,epoch):
     ids_tensor = ids_tensor.to(device)
     llm_model.tokenizer.train(text)
     loss_func = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(llm_model.parameters(), lr=0.0001)
+    optimizer = torch.optim.Adam(llm_model.parameters(), lr=0.0003)
 
     
 
@@ -60,7 +60,7 @@ def  Train(text,epoch):
 if __name__ == "__main__":
     with open("moby_dick_or_the_whale.txt", "r", encoding="utf-8") as f:
         text = f.read()
-    Train(text, epoch=500000)
+    Train(text, epoch=50000)
 
     
 
